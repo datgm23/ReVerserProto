@@ -21,6 +21,11 @@ namespace ReVerser
         {
             Vector2 v = walkSpeed * Input.GetAxisRaw("Horizontal") * Vector2.right;
             rb.velocity = v;
+
+            if (Input.GetButtonDown("Jump"))
+            {
+                currentSwitch?.Action(this);
+            }
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
