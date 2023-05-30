@@ -11,17 +11,17 @@ namespace ReVerser
     {
         public void Action(PlayerController player)
         {
-            throw new System.NotImplementedException();
+            Debug.Log($"Action({player})");
         }
 
         public void Activate()
         {
-            throw new System.NotImplementedException();
+            Debug.Log("Activate()");
         }
 
         public void Deactivate()
         {
-            throw new System.NotImplementedException();
+            Debug.Log("Deactivate()");
         }
     }
 }
