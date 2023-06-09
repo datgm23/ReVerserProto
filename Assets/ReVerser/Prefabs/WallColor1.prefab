@@ -65,7 +65,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4076840631683556502, guid: 1549d10ca084f7442b33ee36b38437f2, type: 3}
       propertyPath: m_Name
-      value: WallGeneral
+      value: WallColor1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4076840631683556502, guid: 1549d10ca084f7442b33ee36b38437f2, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1549d10ca084f7442b33ee36b38437f2, type: 3}

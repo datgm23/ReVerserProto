@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 9019570461554345815}
   - component: {fileID: 5229289507242501573}
   - component: {fileID: 6235487273170063521}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Switch
   m_TagString: Switch
   m_Icon: {fileID: 0}
@@ -131,6 +131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 561cb076f0ba18d4f91bd5d5550369be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  reactivateSeconds: 1
 --- !u!61 &5229289507242501573
 BoxCollider2D:
   m_ObjectHideFlags: 0

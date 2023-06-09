@@ -67,6 +67,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WallColor2
       objectReference: {fileID: 0}
+    - target: {fileID: 4076840631683556502, guid: 1549d10ca084f7442b33ee36b38437f2, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5410362699526322503, guid: 1549d10ca084f7442b33ee36b38437f2, type: 3}
       propertyPath: myColor
       value: 1
