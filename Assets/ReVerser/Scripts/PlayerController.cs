@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.XPath;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ReVerser
@@ -8,8 +10,11 @@ namespace ReVerser
     {
         [Tooltip("移動速度"), SerializeField]
         float walkSpeed = 4;
+        [Tooltip("乗り越えや降りられる段差"), SerializeField]
+        float canWalkStep = 0.4f;
 
         Rigidbody2D rb;
+        CapsuleCollider2D capsuleCollider;
         ISwitch currentSwitch;
 
         /// <summary>
@@ -29,6 +34,7 @@ namespace ReVerser
         void Awake()
         {
             rb = GetComponent<Rigidbody2D>();
+            capsuleCollider = rb.GetComponent<CapsuleCollider2D>();
             velocity = Vector2.zero;
 
             // WallとSwitchレイヤーのみを対象にして、法線のフィルタを有効にする
@@ -47,7 +53,7 @@ namespace ReVerser
             // 重力加速
             velocity.y += Time.deltaTime * rb.gravityScale * Physics2D.gravity.y;
             // 今回の移動量を求める
-            float moveY = Time.deltaTime * velocity.y;
+            float moveY = Time.deltaTime * velocity.y - canWalkStep * rb.gravityScale;
 
             // 上下の接触判定
             int count = GravityCast(moveY);
@@ -60,7 +66,7 @@ namespace ReVerser
 
             // 頭をぶつけているか着地
             velocity.y = 0;
-            AdjustMoveY(count);
+            AdjustMoveY(count, moveY);
 
             return true;
         }
@@ -69,9 +75,37 @@ namespace ReVerser
         /// Y移動で頭の位置や足の位置がめり込まないように補正。
         /// </summary>
         /// <param name="count">接触数</param>
-        void AdjustMoveY(int count)
+        void AdjustMoveY(int count, float moveY)
         {
+            float adjustY = -moveY;
 
+            for (int i = 0; i < count; i++)
+            {
+                var fromTarget = results[i].point;
+                var fromMe = results[i].point;
+                if (rb.gravityScale > 0)
+                {
+                    // 下方向へ落下中
+                    fromTarget.y = results[i].collider.bounds.max.y;
+                    fromMe.y = capsuleCollider.bounds.min.y;
+                }
+                else
+                {
+                    // 上方向へ落下中
+                    fromTarget.y = results[i].collider.bounds.min.y;
+                    fromMe.y = capsuleCollider.bounds.max.y;
+                }
+
+                var closestTarget = results[i].collider.ClosestPoint(fromTarget);
+                var closestMe = capsuleCollider.ClosestPoint(fromMe);
+                float dy = closestTarget.y - closestMe.y;
+                adjustY = Mathf.Abs(adjustY) < Mathf.Abs(dy) ? adjustY : dy;
+                Debug.Log($"[{i}] dy={dy} adust={adjustY} ty={closestTarget.y} my={closestMe.y}");
+            }
+
+            var p = rb.position;
+            p.y += adjustY;
+            rb.position = p;
         }
 
         /// <summary>
