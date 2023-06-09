@@ -46,23 +46,11 @@ namespace ReVerser
         {
             // 重力加速
             velocity.y += Time.deltaTime * rb.gravityScale * Physics2D.gravity.y;
-
             // 今回の移動量を求める
             float moveY = Time.deltaTime * velocity.y;
 
             // 上下の接触判定
-            if (moveY > 0)
-            {
-                // 上昇中は、下方向の面の対象
-                gravityContactFilter.SetNormalAngle(270-89, 270+89);
-            }
-            else
-            {
-                // 下降中は、上方向の面の対象
-                gravityContactFilter.SetNormalAngle(90 - 89, 90 + 89);
-            }
-            int count = rb.Cast(Vector2.up, gravityContactFilter, results, moveY);
-
+            int count = GravityCast(moveY);
             if (count == 0)
             {
                 // 空中
@@ -70,9 +58,40 @@ namespace ReVerser
                 return false;
             }
 
-            // 頭をぶつけているか、着地
+            // 頭をぶつけているか着地
             velocity.y = 0;
+            AdjustMoveY(count);
+
             return true;
+        }
+
+        /// <summary>
+        /// Y移動で頭の位置や足の位置がめり込まないように補正。
+        /// </summary>
+        /// <param name="count">接触数</param>
+        void AdjustMoveY(int count)
+        {
+
+        }
+
+        /// <summary>
+        /// 指定のYの移動距離を受けとって、接触判定をする。
+        /// </summary>
+        /// <param name="moveY">移動距離</param>
+        /// <returns>接触数</returns>
+        int GravityCast(float moveY)
+        {
+            if (moveY > 0)
+            {
+                // 上昇中は、下方向の面の対象
+                gravityContactFilter.SetNormalAngle(270 - 89, 270 + 89);
+            }
+            else
+            {
+                // 下降中は、上方向の面の対象
+                gravityContactFilter.SetNormalAngle(90 - 89, 90 + 89);
+            }
+            return rb.Cast(Vector2.up, gravityContactFilter, results, moveY);
         }
 
         void Update()
