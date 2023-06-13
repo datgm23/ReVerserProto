@@ -77,34 +77,16 @@ namespace ReVerser
         /// <param name="count">接触数</param>
         void AdjustMoveY(int count, float moveY)
         {
-            float adjustY = -moveY;
+            float adjustY = Mathf.Abs(moveY);
 
             for (int i = 0; i < count; i++)
             {
-                var fromTarget = results[i].point;
-                var fromMe = results[i].point;
-                if (rb.gravityScale > 0)
-                {
-                    // 下方向へ落下中
-                    fromTarget.y = results[i].collider.bounds.max.y;
-                    fromMe.y = capsuleCollider.bounds.min.y;
-                }
-                else
-                {
-                    // 上方向へ落下中
-                    fromTarget.y = results[i].collider.bounds.min.y;
-                    fromMe.y = capsuleCollider.bounds.max.y;
-                }
-
-                var closestTarget = results[i].collider.ClosestPoint(fromTarget);
-                var closestMe = capsuleCollider.ClosestPoint(fromMe);
-                float dy = closestTarget.y - closestMe.y;
-                adjustY = Mathf.Abs(adjustY) < Mathf.Abs(dy) ? adjustY : dy;
-                Debug.Log($"[{i}] dy={dy} adust={adjustY} ty={closestTarget.y} my={closestMe.y}");
+                adjustY = Mathf.Min(adjustY, results[i].distance);
+                Debug.Log($"[{i}] deltaTime={Time.deltaTime} dist={results[i].distance} fraction={results[i].fraction} adust={adjustY} moveY={moveY}");
             }
 
             var p = rb.position;
-            p.y += adjustY;
+            p.y += -Mathf.Sign(rb.gravityScale)* adjustY;
             rb.position = p;
         }
 
@@ -128,7 +110,7 @@ namespace ReVerser
             return rb.Cast(Vector2.up, gravityContactFilter, results, moveY);
         }
 
-        void Update()
+        void FixedUpdate()
         {
             if (GravityFall())
             {
