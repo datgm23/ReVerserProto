@@ -53,7 +53,7 @@ namespace ReVerser
             // 重力加速
             velocity.y += Time.deltaTime * rb.gravityScale * Physics2D.gravity.y;
             // 今回の移動量を求める
-            float moveY = Time.deltaTime * velocity.y - canWalkStep * rb.gravityScale;
+            float moveY = Time.deltaTime * velocity.y;
 
             // 上下の接触判定
             int count = GravityCast(moveY);
